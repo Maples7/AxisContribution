@@ -43,8 +43,8 @@ public class ACDataStore: ObservableObject {
     /// A method that creates data.
     /// - Parameters:
     ///   - constant: Settings that define the contribution view.
-    ///   - sourceDates: An array of contributed dates.
-    func setup(constant: ACConstant, source sourceDatas: [Date: ACData]? = nil) {
+    ///   - sourceDatas: An array of contributed dates.
+    func setup(constant: ACConstant, source sourceDatas: [Date]? = nil) {
         self.constant = constant
         if let sourceDatas = sourceDatas {
             self.datas = ACDataProvider.shared.mappedData(constant: constant, source: sourceDatas)

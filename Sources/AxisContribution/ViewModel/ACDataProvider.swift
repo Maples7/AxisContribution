@@ -35,16 +35,21 @@ public class ACDataProvider {
     ///   - constant: Settings that define the contribution view.
     ///   - sourceDatas: An dict of contributed dates and counts.
     /// - Returns: mapped data
-    public func mappedData(constant: ACConstant, source sourceDatas: [Date: ACData]) -> [[ACData]] {
+    public func mappedData(constant: ACConstant, source sourceDatas: [Date]) -> [[ACData]] {
         var newDatas = [[ACData]]()
         var dateWeekly = Date.datesWeekly(from: constant.fromDate, to: constant.toDate)
         if constant.axisMode == .vertical {
             dateWeekly = dateWeekly.reversed()
         }
-        // make dates to the start of the day
-        var cleanDatas: [Date: ACData] = [:]
-        sourceDatas.forEach { date, count in
-            cleanDatas[date.startOfDay] = count
+        // NOTE: make dates a hash table with keys to be the start of days
+        var cleanDatas: [Date:ACData] = [:]
+        sourceDatas.forEach { date in
+            let startOfDate = date.startOfDay
+            if cleanDatas[startOfDate] == nil {
+                cleanDatas[startOfDate] = ACData(date: startOfDate, count: 1)
+            } else {
+                cleanDatas[startOfDate]?.count += 1
+            }
         }
         dateWeekly.forEach { date in
             let datas = date.datesInWeek.map { date -> ACData in

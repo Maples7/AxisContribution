@@ -220,7 +220,7 @@ struct ACGridStack_Previews: PreviewProvider {
     static var previews: some View {
         AxisContribution(
             constant: .init(),
-            source: [:]
+            source: []
         )
         .padding()
     }
