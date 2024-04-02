@@ -51,13 +51,13 @@ struct ACGridStack<B, F>: View where B: View, F: View {
             if constant.axisMode == .horizontal {
                 HStack(alignment: .top, spacing: spacing) {
                     VStack(alignment: .trailing, spacing: 0) {
-                        Text("M")
+                        Text("\(getWeekDayTitleAt(2))")
                             .frame(height: rowSize.height)
                             .padding(.top, rowSize.height * 2 + spacing * 2)
-                        Text("W")
+                        Text("\(getWeekDayTitleAt(4))")
                             .frame(height: rowSize.height)
                             .padding(.top, rowSize.height + spacing * 2)
-                        Text("F")
+                        Text("\(getWeekDayTitleAt(6))")
                             .frame(height: rowSize.height)
                             .padding(.top, rowSize.height + spacing * 2)
                     }
@@ -77,11 +77,11 @@ struct ACGridStack<B, F>: View where B: View, F: View {
                 VStack(alignment: .leading, spacing: spacing) {
                     ZStack(alignment: .bottom) {
                         let size = titleWidth
-                        Text("M")
+                        Text("\(getWeekDayTitleAt(2))")
                             .offset(x: size + (rowSize.width * 1 + spacing * 2))
-                        Text("W")
+                        Text("\(getWeekDayTitleAt(4))")
                             .offset(x: size + (rowSize.width * 3 + spacing * 4))
-                        Text("F")
+                        Text("\(getWeekDayTitleAt(6))")
                             .offset(x: size + (rowSize.width * 5 + spacing * 5))
                     }
                     ForEach(Array(store.datas.enumerated()), id: \.offset) { column, datas in
@@ -145,7 +145,26 @@ struct ACGridStack<B, F>: View where B: View, F: View {
             titleWidth = max(titleWidth, _titleSize.width)
         }
     }
-    
+
+    /// A method that returns the very short symbol for the weekDay.
+    ///
+    /// - Parameters:
+    ///   - weekDay: weekDay index, **should be in range 1...7**, e.g. 1 for the first day of week wth considering user settings
+    ///
+    /// > Note: calendar.veryShortWeekdaySymbols is always ["S", "M", "T", "W", "T", "F", "S"] with Sunday being the 1st element,
+    /// and calendar.firstWeekday indicates the first week day that user chooses. If user sets Monday as the first week day,
+    /// calendar.firstWeekday would be 2, the second element of calendar.veryShortWeekdaySymbols. 
+    /// In this case, if you want to get the symbol of the first week day (e.g. Monday), you should call `getWeekDayTitle(1)`,
+    /// the index in calendar.veryShortWeekdaySymbols should be calendar.firstWeekday (2) + weekDay (1) - 2,
+    /// which returns the second element of calendar.veryShortWeekdaySymbols, being exactly Monday in this case.
+    ///
+    /// - Returns: the very short symbol for the weekDay.
+    private func getWeekDayTitleAt(_ weekDayIndex: Int) -> String {
+        let calendar = Calendar.current
+        let index = (calendar.firstWeekday + weekDayIndex - 2) % 7
+        return calendar.veryShortWeekdaySymbols[index]
+    }
+
     private func monthTitle(_ date: Date) -> String {
         let calendar = Calendar.current
         let monthTitles = calendar.shortMonthSymbols
