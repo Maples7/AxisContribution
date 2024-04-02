@@ -110,10 +110,15 @@ struct ACGridStack<B, F>: View where B: View, F: View {
     /// - Returns: -
     private func getRowView(column: Int, row: Int, data: ACData) -> some View {
         ZStack {
-            background?(ACIndexSet(column: column, row: row), data)
-            foreground?(ACIndexSet(column: column, row: row), data)
-                .opacity(getOpacity(count: data.count))
-                .takeSize($rowSize)
+            if data.date.startOfDay > constant.toDate.startOfDay {
+                background?(ACIndexSet(column: column, row: row), data)
+                    .hidden()
+            } else {
+                background?(ACIndexSet(column: column, row: row), data)
+                foreground?(ACIndexSet(column: column, row: row), data)
+                    .opacity(getOpacity(count: data.count))
+                    .takeSize($rowSize)
+            }
         }
     }
     
@@ -217,5 +222,6 @@ struct ACGridStack_Previews: PreviewProvider {
             constant: .init(),
             source: [:]
         )
+        .padding()
     }
 }

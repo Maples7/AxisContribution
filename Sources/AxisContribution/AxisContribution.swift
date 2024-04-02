@@ -71,7 +71,7 @@ public struct AxisContribution<B, F>: View where B: View, F: View {
                                 }
                         }
                         .contentShape(Rectangle())
-                    }else {
+                    } else {
                         VStack(spacing: 0) {
                             content
                         }
